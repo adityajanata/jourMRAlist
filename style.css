@@ -1,0 +1,88 @@
+body {
+  font-family: Poppins, sans-serif;
+  font-weight: 400;
+  text-align: center;
+  padding: 40px;
+}
+#loading {
+  display: none;
+  margin-top: 20px;
+  font-weight: bold;
+  color: blue;
+}
+#success {
+  display: none;
+  margin-top: 20px;
+  font-weight: bold;
+  color: green;
+}
+#error {
+  display: none;
+  margin-top: 20px;
+  font-weight: bold;
+  color: red;
+}
+#elapsed {
+  font-weight: normal;
+  color: black;
+}
+
+.chango-regular {
+  font-family: "Chango", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* container utama */
+.container {
+  display: flex;          /* buat baris horizontal */
+  gap: 16px;              /* jarak antar kolom */
+  align-items: stretch;   /* supaya semua kolom sama tinggi */
+  flex-wrap: wrap;        /* kalau layar sempit, kolom akan wrap ke baris berikutnya */
+  padding: 16px;
+  box-sizing: border-box;
+  background: #f4f6f8;
+}
+
+/* kolom: otomatis membagi ruang sama rata */
+.column {
+  flex: 1 1 0%;           /* grow=1 shrink=1 basis=0 -> semua kolom sama rata */
+  min-width: 180px;       /* optional: mencegah kolom jadi terlalu sempit di layar kecil */
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  box-sizing: border-box;
+}
+
+/* styling kecil buat demo */
+.column h3 { margin: 0 0 8px 0; font-size: 16px; }
+.column p  { margin: 0; font-size: 14px; color: #333; }
+
+.column img {
+  display: block;
+  margin: 0 auto 12px;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+
+  /* animasi halus */
+  transition: transform 0.3s ease, 
+              box-shadow 0.3s ease, 
+              filter 0.3s ease;
+
+  filter: brightness(0.9); /* default agak redup (90%) */
+}
+
+.column img:hover {
+  transform: scale(1.08); 
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+  filter: brightness(1); /* full terang (100%) */
+}
+
+
+
+

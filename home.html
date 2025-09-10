@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Web Screenshot</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chango&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+  <h1 class="chango-regular">Capture Log MSR by Elastic ID</h1>
+  <input type="text" id="urlInput" placeholder="Masukkin ID..." size="25">
+  <button id="captureBtn">Capture</button>
+
+  <hr />
+  <h3>3  langkah mudah capture di Elastic MSR</h3>
+  <div class="container">
+    <div class="column">
+      <h2>Copy</h2>
+      <img src="img/1.png" alt="Gambar 1">
+      <p>Copy <i>_id</i> dari dashboard Elastic</p>
+    </div>
+
+    <div class="column">
+      <h2>Click</h2>
+      <img src="img/2.png" alt="Gambar 2">
+      <p>Tekan tombol Capture disamping</p>
+    </div>
+
+    <div class="column">
+      <h2>Paste</h2>
+      <img src="img/3.png" alt="Gambar 3">
+      <p>Paste hasilnya di Word / Confluence</p>
+    </div>
+  </div>
+
+  <div id="loading">⏳ Loading... don't switch tabs <span id="elapsed">0.0s</span></div>
+  <div id="success">✅ Screenshot successfully copied to clipboard! <span id="finalTime"></span></div>
+  <div id="error">❌ Capture failed, Try again.</div>
+
+  <script>
+    document.getElementById("captureBtn").addEventListener("click", async () => {
+      const url = document.getElementById("urlInput").value.trim();
+      const loading = document.getElementById("loading");
+      const success = document.getElementById("success");
+      const error = document.getElementById("error");
+      const elapsedSpan = document.getElementById("elapsed");
+      const finalTime = document.getElementById("finalTime");
+
+
+      if (!url) {
+        error.style.display = "block";
+        error.textContent = "⚠️ ID tidak boleh kosong!";
+        loading.style.display = "none";
+        success.style.display = "none";
+        return;
+      }
+
+      // Reset status
+      loading.style.display = "block";
+      success.style.display = "none";
+      error.style.display = "none";
+      elapsedSpan.textContent = "0.0s";
+      finalTime.textContent = "";
+
+      // Mulai timer
+      const startTime = Date.now();
+      let interval = setInterval(() => {
+        const diff = Date.now() - startTime;
+        elapsedSpan.textContent = (diff / 1000).toFixed(1) + "s";
+      }, 100);
+
+      const todayDate = new Date().toISOString().split('T')[0];
+      console.log(todayDate);
+      const fullUrl = `http://172.18.241.15:5601/app/discover#/doc/9cf8a510-7e7f-11ec-b4a7-bfcaa6deb2ac/esbtrxaudit-${todayDate}?id=${url}`;
+
+      try {
+        const response = await fetch(`http://localhost:3000/screenshot?url=${encodeURIComponent(fullUrl)}`);
+        if (!response.ok) throw new Error(`Server returned ${response.status} ${response.statusText}`);
+
+        const blob = await response.blob();
+        await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": blob })
+        ]);
+
+        clearInterval(interval);
+        loading.style.display = "none";
+        success.style.display = "block";
+        finalTime.textContent = `(Load time: ${(Date.now() - startTime) / 1000}s)`;
+      } catch (err) {
+        clearInterval(interval);
+        console.error("Detail error:", err);
+        loading.style.display = "none";
+        error.style.display = "block";
+        error.textContent = `❌ Gagal capture: ${err.message}`;
+      }
+    });
+  </script>
+</body>
+</html>
